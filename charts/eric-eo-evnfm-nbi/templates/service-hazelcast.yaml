@@ -1,0 +1,42 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eric-eo-evnfm-nbi.name" . }}-hazelcast
+  labels: {{- include "eric-eo-evnfm-nbi.labels.extended-defaults" . | nindent 4 }}
+  annotations:
+    {{- $commonAnnotations := include "eric-eo-evnfm-nbi.annotations" . | fromYaml }}
+    {{- $prometheus := include "eric-eo-evnfm-nbi.prometheus" . | fromYaml }}
+    {{- include "eric-eo-evnfm-library-chart.mergeAnnotations" (dict "location" .Template.Name "sources" (list
+        $commonAnnotations $prometheus)) | trim | nindent 8 }}
+spec:
+  type: {{ .Values.hazelcast.service.type }}
+  ports:
+    - port: {{ .Values.hazelcast.service.port }}
+      targetPort: {{ .Values.hazelcast.service.port }}
+      protocol: TCP
+      name: hazelcast
+  selector:
+    app: {{ template "eric-eo-evnfm-nbi.name" . }}
+    release: {{ .Release.Name }}
+  ipFamilyPolicy: PreferDualStack
+{{- if (eq (include "eric-eo-evnfm-nbi.internalIPFamily" .) "IPv4") }}
+  ipFamilies: [ "IPv4" ]
+{{- else if (eq (include "eric-eo-evnfm-nbi.internalIPFamily" .) "IPv6") }}
+  ipFamilies: [ "IPv6" ]
+{{- end }}

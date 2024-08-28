@@ -1,0 +1,418 @@
+[
+  {
+    "id": "37f0e31b-b5f5-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "82d03ebd-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:35:56Z",
+    "startTime": "2020-06-24T08:32:20Z",
+    "operation": "SCALE",
+    "operationParams": {
+      "type": "SCALE_OUT",
+      "aspectId": "GPB",
+      "numberOfSteps": 1,
+      "additionalParams": {
+        "ossNotificationServiceHost": "notificationservice",
+        "ossType": "OSSRC",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossUserName": "root",
+        "external_ip_for_services_vm": "10.232.8.49,10.232.8.120",
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2,ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "services_flavor": "m1.small",
+        "cloudManagerType": "OPENSTACK",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossMasterHostName": "masterservice",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "services_vm_count": 2,
+        "ip_version": 4,
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658"
+      }
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/37f0e31b-b5f5-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/82d03ebd-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "338069b3-b5f5-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "80c1f7ec-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:35:59Z",
+    "startTime": "2020-06-24T08:32:12Z",
+    "operation": "SCALE",
+    "operationParams": {
+      "type": "SCALE_OUT",
+      "aspectId": "GPB",
+      "numberOfSteps": 1,
+      "additionalParams": {
+        "ossNotificationServiceHost": "notificationservice",
+        "ossType": "OSSRC",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossUserName": "root",
+        "external_ip_for_services_vm": "10.232.8.44,10.232.8.115",
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2,ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "services_flavor": "m1.small",
+        "cloudManagerType": "OPENSTACK",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossMasterHostName": "masterservice",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "services_vm_count": 2,
+        "ip_version": 4,
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658"
+      }
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/338069b3-b5f5-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/80c1f7ec-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "930877c1-b5f2-11ea-9e39-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "7e77445b-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:15:50Z",
+    "startTime": "2020-06-24T08:13:24Z",
+    "operation": "INSTANTIATE",
+    "requestSourceType": "NBI",
+    "operationParams": {
+      "extVirtualLinks": [],
+      "additionalParams": {
+        "external_ip_for_services_vm": "10.232.8.39",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossType": "OSSRC",
+        "services_vm_count": 1,
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658",
+        "ossMasterHostName": "masterservice",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "ip_version": 4,
+        "ossNotificationServiceHost": "notificationservice",
+        "cloudManagerType": "OPENSTACK",
+        "services_flavor": "m1.small",
+        "ossUserName": "root"
+      },
+      "flavourId": "cee",
+      "vimConnectionInfo": [
+        {
+          "id": "3e75e4a0-4d99-11ea-9ebf-fa163ea1075a",
+          "vimId": "vim1",
+          "vimType": "OPENSTACK",
+          "interfaceInfo": {
+            "identityEndPoint": "https://cloud12a.athtem.eei.ericsson.se:13000/v3"
+          },
+          "accessInfo": {
+            "projectId": "b876b35a68544718b8bf51de66761c97",
+            "credentials": {
+              "username": "ORCH_VNFLCM_Flash_C12A15_Static_admin",
+              "password": "YWRtaW4xMjM="
+            }
+          },
+          "extra": {}
+        }
+      ],
+      "instantiationLevelId": null,
+      "extManagedVirtualLinks": []
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/930877c1-b5f2-11ea-9e39-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/7e77445b-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "2edea766-b5f5-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "84df21ce-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:38:16Z",
+    "startTime": "2020-06-24T08:32:05Z",
+    "operation": "HEAL",
+    "operationParams": {
+      "cause": "Any String",
+      "additionalParams": {}
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/2edea766-b5f5-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/84df21ce-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "3429c91d-b5f5-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "88619129-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:38:15Z",
+    "startTime": "2020-06-24T08:32:13Z",
+    "operation": "HEAL",
+    "operationParams": {
+      "cause": "Any String",
+      "additionalParams": {}
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/3429c91d-b5f5-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/88619129-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "d9c65bb9-b5f2-11ea-9e39-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "83434bea-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:17:48Z",
+    "startTime": "2020-06-24T08:15:22Z",
+    "operation": "INSTANTIATE",
+    "requestSourceType": "NBI",
+    "operationParams": {
+      "extVirtualLinks": [],
+      "additionalParams": {
+        "external_ip_for_services_vm": "10.232.8.50",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossType": "OSSRC",
+        "services_vm_count": 1,
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658",
+        "ossMasterHostName": "masterservice",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "ip_version": 4,
+        "ossNotificationServiceHost": "notificationservice",
+        "cloudManagerType": "OPENSTACK",
+        "services_flavor": "m1.small",
+        "ossUserName": "root"
+      },
+      "flavourId": "cee",
+      "vimConnectionInfo": [
+        {
+          "id": "3e75e4a0-4d99-11ea-9ebf-fa163ea1075a",
+          "vimId": "vim1",
+          "vimType": "OPENSTACK",
+          "interfaceInfo": {
+            "identityEndPoint": "https://cloud12a.athtem.eei.ericsson.se:13000/v3"
+          },
+          "accessInfo": {
+            "projectId": "b876b35a68544718b8bf51de66761c97",
+            "credentials": {
+              "username": "ORCH_VNFLCM_Flash_C12A15_Static_admin",
+              "password": "YWRtaW4xMjM="
+            }
+          },
+          "extra": {}
+        }
+      ],
+      "instantiationLevelId": null,
+      "extManagedVirtualLinks": []
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/d9c65bb9-b5f2-11ea-9e39-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/83434bea-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "f3889924-b5f2-11ea-9e39-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "84df21ce-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:18:30Z",
+    "startTime": "2020-06-24T08:16:06Z",
+    "operation": "INSTANTIATE",
+    "requestSourceType": "NBI",
+    "operationParams": {
+      "extVirtualLinks": [],
+      "additionalParams": {
+        "external_ip_for_services_vm": "10.232.8.54",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossType": "OSSRC",
+        "services_vm_count": 1,
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658",
+        "ossMasterHostName": "masterservice",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "ip_version": 4,
+        "ossNotificationServiceHost": "notificationservice",
+        "cloudManagerType": "OPENSTACK",
+        "services_flavor": "m1.small",
+        "ossUserName": "root"
+      },
+      "flavourId": "cee",
+      "vimConnectionInfo": [
+        {
+          "id": "3e75e4a0-4d99-11ea-9ebf-fa163ea1075a",
+          "vimId": "vim1",
+          "vimType": "OPENSTACK",
+          "interfaceInfo": {
+            "identityEndPoint": "https://cloud12a.athtem.eei.ericsson.se:13000/v3"
+          },
+          "accessInfo": {
+            "projectId": "b876b35a68544718b8bf51de66761c97",
+            "credentials": {
+              "username": "ORCH_VNFLCM_Flash_C12A15_Static_admin",
+              "password": "YWRtaW4xMjM="
+            }
+          },
+          "extra": {}
+        }
+      ],
+      "instantiationLevelId": null,
+      "extManagedVirtualLinks": []
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/f3889924-b5f2-11ea-9e39-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/84df21ce-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "a1907975-b620-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "7e77445b-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T13:46:35Z",
+    "startTime": "2020-06-24T13:43:05Z",
+    "operation": "SCALE",
+    "operationParams": {
+      "type": "SCALE_IN",
+      "aspectId": "GPB",
+      "numberOfSteps": 1,
+      "additionalParams": {
+        "ossNotificationServiceHost": "notificationservice",
+        "ossType": "OSSRC",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossUserName": "root",
+        "external_ip_for_services_vm": "10.232.8.39",
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "services_flavor": "m1.small",
+        "cloudManagerType": "OPENSTACK",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossMasterHostName": "masterservice",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "services_vm_count": 1,
+        "ip_version": 4,
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658"
+      }
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/a1907975-b620-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/7e77445b-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "2b6d0047-b5f5-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "847ba501-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T08:38:15Z",
+    "startTime": "2020-06-24T08:32:03Z",
+    "operation": "HEAL",
+    "operationParams": {
+      "cause": "Any String",
+      "additionalParams": {}
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/2b6d0047-b5f5-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/847ba501-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  },
+  {
+    "id": "71cb74f0-b61c-11ea-b2b0-46b236894c78",
+    "operationState": "COMPLETED",
+    "vnfInstanceId": "7fc1c5e2-b5f2-11ea-9e39-46b236894c78",
+    "grantId": "id",
+    "stateEnteredTime": "2020-06-24T13:16:34Z",
+    "startTime": "2020-06-24T13:13:07Z",
+    "operation": "SCALE",
+    "operationParams": {
+      "type": "SCALE_OUT",
+      "aspectId": "GPB",
+      "numberOfSteps": 1,
+      "additionalParams": {
+        "ossNotificationServiceHost": "notificationservice",
+        "ossType": "OSSRC",
+        "external_subnet_gateway": "10.232.8.1",
+        "ossUserName": "root",
+        "external_ip_for_services_vm": "10.232.8.42,10.232.8.113",
+        "servicesImage": "ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2,ERICrhelvnflafimage_CXP9032490-5.12.18.qcow2",
+        "services_flavor": "m1.small",
+        "cloudManagerType": "OPENSTACK",
+        "ossMasterHostIP": "1.1.1.1",
+        "external_subnet_cidr": "10.232.8.0/22",
+        "ossMasterHostName": "masterservice",
+        "ossNotificationServiceIP": "1.1.1.1",
+        "services_vm_count": 2,
+        "ip_version": 4,
+        "external_net_id": "226cde9c-619d-4d6c-a1e8-e1e565723658"
+      }
+    },
+    "cancelPending": false,
+    "_links": {
+      "self": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_lcm_op_occs/71cb74f0-b61c-11ea-b2b0-46b236894c78"
+      },
+      "instantiate": {
+        "href": "https://evnfm.ccd-c7a007.athtem.eei.ericsson.se/vnflcm/v1/vnf_instances/7fc1c5e2-b5f2-11ea-9e39-46b236894c78"
+      }
+    },
+    "automaticInvocation": false
+  }
+]

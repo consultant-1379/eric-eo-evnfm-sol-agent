@@ -1,0 +1,30 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+apiVersion: v2
+appVersion: '1.0'
+dependencies:
+- condition: eric-evnfm-rbac.enabled
+  name: eric-evnfm-rbac
+  repository: https://arm.epk.ericsson.se/artifactory/proj-eo-evnfm-helm/
+  version: 0.125.0-1
+- import-values: []
+  name: eric-eo-evnfm-library-chart
+  repository: https://arm.seli.gic.ericsson.se/artifactory/proj-eo-evnfm-helm-local
+  version: 0.37.0-1
+description: A Helm chart for EO EVNFM to route traffic between CNF and VNF applications
+name: eric-eo-evnfm-nbi
+version: 0.0.1

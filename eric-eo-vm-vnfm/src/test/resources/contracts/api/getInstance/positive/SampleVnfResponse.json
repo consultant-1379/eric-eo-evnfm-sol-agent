@@ -1,0 +1,12 @@
+{
+  "id": "ID_TEMP",
+  "vnfInstanceName": "checkpkg1",
+  "vnfInstanceDescription": "Testing_DND",
+  "vnfdId": "def1ce-4cf4-477c-aab3-2b04e6a381",
+  "vnfProvider": "Ericsson",
+  "vnfProductName": "def1ce-4cf4-477c-aab3-2b04e6a381",
+  "vnfSoftwareVersion": "0.13.2",
+  "vnfdVersion": "1.0",
+  "onboardedVnfPkgInfoId": "Orvnf-PKG3",
+  "instantiationState": "NOT_INSTANTIATED"
+}

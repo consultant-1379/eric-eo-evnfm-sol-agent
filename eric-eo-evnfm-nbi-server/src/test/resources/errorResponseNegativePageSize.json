@@ -1,0 +1,6 @@
+{
+  "type":"Bad Request",
+  "title":"Wrong query parameter",
+  "status":400,
+  "detail":"Invalid page number:: -1, page number must be greater than 0"
+}

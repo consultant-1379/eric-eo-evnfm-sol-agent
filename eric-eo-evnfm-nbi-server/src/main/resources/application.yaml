@@ -1,0 +1,347 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+
+endpoints.health.sensitive: "false"
+info.app.name: '@name@'
+info.app.description: A Microservice to provide routing to VNFLCM or EO EVNFM depending on the VNF type
+info.app.version: '@version@'
+info.app.legal: "COPYRIGHT Ericsson 2024 -
+ The copyright to the computer program(s) herein is the property of
+ Ericsson Inc. The programs may be used and/or copied only with written
+ permission from Ericsson Inc. or in accordance with the terms and
+ conditions stipulated in the agreement/contract under which the
+ program(s) have been supplied."
+
+#See more details about pattern layout: https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+#See more details about logging.pattern.level : https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/html/boot-features-logging.html#boot-features-custom-log-configuration
+#logging.pattern.level: "%5p [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}][%X{userName}]"
+
+#http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
+
+hosts:
+  primary: http://eric-vnfm-orchestrator-service:8888
+  secondary:
+
+# Spring Boot
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: "10s"
+  codec:
+    max-in-memory-size: 20MB
+  main.banner-mode: "off"
+  application:
+    name: eric-eo-evnfm-nbi
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+    config:
+      failFast: true
+      retry:
+        maxAttempts: 15
+    gateway:
+      httpclient:
+        ssl:
+          use-insecure-trust-manager: true
+      x-forwarded:
+        host-append: false
+        host-enabled: false
+      routes:
+      - id: vnflcm-instantiate
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/instantiate
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-upgrade
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/change_package_info
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-change
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/change_vnfpkg
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-get-package
+        predicates:
+        - Path=/vnflcm/*/vnf_packages
+        filters:
+        - UnsupportedRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-scale
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/scale
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-scale_to_level
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/scale_to_level
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-heal
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/heal
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-operate
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/operate
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-change_flavour
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/change_flavour
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-change_ext_conn
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/change_ext_conn
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-update
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/update
+        filters:
+        - UnsupportedRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-terminate
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/terminate
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-instance
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-instance-list
+        predicates:
+        - Path=/vnflcm/*/vnf_instances
+        - Method=GET
+        filters:
+        - MergeResponse=${hosts.secondary}
+        uri: ${hosts.primary}
+        metadata:
+          response-timeout: 290000 # 4min 50sec
+          connect-timeout: 290000
+      - id: vnflcm-createIdentifier
+        predicates:
+        - Path=/vnflcm/*/vnf_instances
+        filters:
+        - LcmRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: vnflcm-sync
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/sync
+        uri: ${hosts.primary}
+      - id: occurrence-retry
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs/{vnflcmOpOccId}/retry
+        filters:
+        - OccurrenceRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: occurrence-rollback
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs/{vnflcmOpOccId}/rollback
+        filters:
+        - OccurrenceRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: occurrence-fail
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs/{vnflcmOpOccId}/fail
+        filters:
+        - OccurrenceRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: occurrence-cancel
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs/{vnflcmOpOccId}/cancel
+        filters:
+        - OccurrenceRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: occurrence-instance
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs/{vnflcmOpOccId}
+        filters:
+        - OccurrenceRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: occurrence-list
+        predicates:
+        - Path=/vnflcm/*/vnf_lcm_op_occs
+        filters:
+        - MergeResponse=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: backups
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/backups/**
+        uri: ${hosts.primary}
+      - id: backup-scopes
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/{vnfInstanceId}/backup/scopes
+        uri: ${hosts.primary}
+      - id: clusterconfigs
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/clusterconfigs/**
+        uri: ${hosts.primary}
+      - id: cism-cluster-data
+        predicates:
+        - Path=/vnflcm/*/vnf_instances/cism-cluster-data
+        uri: ${hosts.primary}
+      - id: configurations
+        predicates:
+        - Path=/info/*/configurations
+        uri: ${hosts.primary}
+      - id: internal-api
+        predicates:
+          - Path=/api/*/operations/**,/api/*/resources/**
+        uri: ${hosts.primary}
+      - id: subscriptions
+        predicates:
+        - Path=/vnflcm/*/subscriptions/**
+        filters:
+        - SubscriptionsRouter=${hosts.secondary}
+        uri: ${hosts.primary}
+      - id: default
+        predicates:
+        - Path=/vnflcm/**
+        uri: ${hosts.primary}
+
+onboarding:
+  host: http://eric-am-onboarding-service:8888
+  path: /api/vnfpkgm/v1/vnf_packages
+  queryValue: (eq,vnfdId,%s)
+
+vnfm:
+  host: ${hosts.primary}
+  vnf:
+    path: /vnflcm/v1/vnf_instances/{vnfInstanceId}
+  occurrence:
+    path: /vnflcm/v1/vnf_lcm_op_occs/{vnflcmOpOccId}
+
+server:
+  shutdown: graceful
+  port: 8888
+  socket: localhost:8888
+  forward-headers-strategy: none
+  http2:
+    enabled: true
+
+#Build Info
+info.build:
+  version: '@project.version@'
+  #    name: @project.name@
+  artifact: '@project.artifactId@'
+
+#Metrics related configurations
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: [ b3, w3c ]
+      produce: [ b3, w3c ]
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "heapdump,threaddump,env"
+  endpoint:
+    env:
+      enabled: false
+    heapdump:
+      enabled: false
+    threaddump:
+      enabled: false
+    health:
+      show-details: "ALWAYS"
+      diskspace:
+        enabled: true
+        path: /tmp
+        threshold: 100MB
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: ping, diskSpace, pvcCheck
+        liveness:
+          include: ping, diskSpace
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+    refresh:
+      enabled: true
+    shutdown:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      sla:
+        http:
+          server:
+            requests: 100ms,300ms,500ms
+    web.server:
+      auto-time-requests: true
+
+healthCheckEnv:
+  mountPaths:
+    readWrite: /tmp
+
+# NFVO Default Values
+nfvo:
+  enabled: false
+  username:
+  password:
+  tenantId:
+
+
+# Default Values for keystore
+truststore:
+  path: /var/lib/ca-certificates/java-cacerts
+  pass: changeit
+
+retry:
+  maxAttempts: 5
+  backoff: 1000
+
+# All timeouts are in seconds
+connection:
+  provider:
+    maxConnections: 500
+    maxIdleTime: 20
+    maxLifeTime: 60
+    pendingAcquireTimeout: 60
+    evictInBackground: 120

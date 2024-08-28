@@ -1,0 +1,41 @@
+[
+  {
+    "id": "63a4bd16-0379-4a4f-ae8c-6d673f47683c",
+    "vnfdId": "d3def1ce-4cf4-477c",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "checksum": null,
+    "softwareImages": [
+      {
+        "id": "1",
+        "name": null,
+        "provider": null,
+        "version": null,
+        "checksum": null,
+        "containerFormat": null,
+        "diskFormat": null,
+        "createdAt": null,
+        "minDisk": null,
+        "minRam": null,
+        "size": null,
+        "userMetadata": null,
+        "imagePath": "registry.rontgen000.seli.gic.ericsson.se/proj-nose/adp-ns:0.0.1-223"
+      }
+    ],
+    "additionalArtifacts": null,
+    "onboardingState": "ONBOARDED",
+    "operationalState": "DISABLED",
+    "usageState": "NOT_IN_USE",
+    "userDefinedData": null,
+    "_links": {
+      "self": {
+        "href": "http://onboarding.rontgen000.seli.gic.ericsson.se/api/vnfpkgm/v1/vnf_packages/63a4bd16-0379-4a4f-ae8c-6d673f47683c"
+      },
+      "vnfd": null,
+      "packageContent": null
+    },
+    "managedContainerInfrastructureObjectPackageURL": "http://eric-lcm-helm-chart-registry.svc.cluster.local:8080/onboarded/charts/sampledescriptor-0.0.1-223.tgz"
+  }
+]

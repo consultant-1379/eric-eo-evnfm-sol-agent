@@ -1,0 +1,7 @@
+{
+  "type":"about:blank",
+  "title":"Malformed Request",
+  "status":400,
+  "detail":"Invalid nextpage_opaque_marker parameter",
+  "instance":""
+}

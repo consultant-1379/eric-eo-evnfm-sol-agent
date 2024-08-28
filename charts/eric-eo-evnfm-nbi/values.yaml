@@ -1,0 +1,229 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+productinfo:
+  rstate: RSTATE
+
+replicaCount: 2
+
+nameOverride: "eric-eo-evnfm-nbi"
+
+podDisruptionBudget:
+  minAvailable: 0
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+
+# DR-D1121-011 supported global parameters shall be left as comments (YAML comment) in the values.yaml
+#global:
+#  registry:
+#    url: armdocker.rnd.ericsson.se
+#    imagePullPolicy: IfNotPresent
+#  timezone: UTC
+#  hosts:
+#    vnfm: default
+#  networkPolicy:
+#    enabled: true
+#  security:
+#    privilegedPolicyClusterRoleName: RELEASE-NAME-allowed-use-privileged-policy
+#  securityPolicy:
+#    rolekind: ""
+#  nodeSelector: {}
+#  labels: {}
+#  annotations: {}
+
+config: eric-oss-common-base-evnfm-nbi-config
+
+imageCredentials:
+  evnfmNBI:
+    repoPath: # see default value in eric-product-info.yaml file
+
+container:
+  ports:
+    http: 8888
+
+service:
+  type: ClusterIP
+  port: 80
+
+hazelcast:
+  service:
+    type: ClusterIP
+    port: 5701
+
+# DR-D1126-005
+resources:
+  nbi:
+    requests:
+      memory: "250Mi"
+      cpu: "200m"
+      ephemeral-storage: "260Mi"
+    limits:
+      memory: "1024Mi"
+      cpu: "800m"
+      ephemeral-storage: "300Mi"
+
+prometheus:
+  path: "/actuator/prometheus"
+  scrape: "true"
+  scrape-role: "endpoints"
+  scrape-interval: "15s"
+
+eric-evnfm-rbac:
+  enabled: true
+  defaultUser:
+    username: rbac-user
+    password: rbac-password
+
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "40G"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "1800"
+  enabled: true
+  hostname: foo.bar.com # to pass DR-HC-181
+  tls:
+    enabled: true
+    secretname: vnfm-tls-secret
+    passthrough: false # to pass DR-HC-181
+
+kubernetes:
+  master: https://kubernetes.default
+
+retry:
+  maxAttempts: "5"
+  backoff: "1000"
+
+maxInMemorySize: 20MB
+
+logging:
+  logstash:
+    host: eric-log-transformer
+    port: 5025
+
+probes:
+  nbi:
+    livenessProbe:
+      initialDelaySeconds: 200
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    readinessProbe:
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+
+podPriority:
+  nbi:
+    priorityClassName: ""
+
+# DR1120-061 Tolerations to influence scheduling decisions made by Kubernetes scheduler
+tolerations:
+  nbi:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+
+terminationGracePeriodSeconds:
+  nbi: 30
+
+nodeSelector: {}
+labels: {}
+annotations: {}
+
+affinity:
+  podAntiAffinity: "hard"
+  topologyKey: "kubernetes.io/hostname"
+
+highAvailability:
+  debug: false
+  serviceMesh:
+    virtualService:
+      enabled: true
+    routes:
+      getVnfInstances:
+        retries:
+          maxAttempts: 2
+        timeout: 180s
+      get:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 90s
+        timeout: 180s
+      post:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 90s
+        timeout: 180s
+      postNode:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 225s
+        timeout: 450s
+      putPatch:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 60s
+        timeout: 120s
+      delete:
+        retries:
+          maxAttempts: 2
+          perTryTimeout: 90s
+        timeout: 180s
+    trafficPolicy:
+      outlierDetection:
+        splitExternalLocalOriginErrors: true # Default: false Local: failure to connect, timeout while connecting. External: 5xx return
+        consecutiveLocalOriginFailures: 2 # Default: 5
+        consecutive5xxErrors: 2 # Default: 5
+        interval: 5s # Default: 10s
+        baseEjectionTime: 1m # Default 30s
+    envoyFilter:
+      orchestrator:
+        serviceName: eric-vnfm-orchestrator-service
+        port: 8888
+
+# DR D1123-127
+appArmorProfile:
+  # The setting applies to all container when the container name is omitted.
+  # { choice='unconfined, runtime/default, localhost, "" ' } [ default="" ]
+  type: ""
+
+# DR D1123-128
+seccompProfile:
+  # The setting applies to all container when the container name is omitted.
+  # { choice='unconfined, runtime/default, localhost, "" ' } [ default="" ]
+  type: ""
+
+# DR-D1120-090
+topologySpreadConstraints: {}
+
+# DR-D1123-134
+securityPolicy:
+  rolename: ""
+
+istio:
+  excludeInboundPorts: "5701,5701"

@@ -1,0 +1,2758 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+openapi: 3.0.1
+info:
+  title: SOL003 - VNF Lifecycle Management interface
+  description: |
+    SOL003 - VNF Lifecycle Management interface definition IMPORTANT: Please note that this file might be not aligned to the current version of the ETSI Group Specification it refers to. In case of discrepancies the published ETSI Group Specification takes precedence.
+  version: 1.1.1
+externalDocs:
+  description: ETSI GS NFV-SOL 003 V2.5.1
+  url: https://www.etsi.org/deliver/etsi_gs/NFV-SOL/001_099/003/02.05.01_60/gs_NFV-SOL003v020501p.pdf
+servers:
+  - url: /vnflcm/v1
+tags:
+  - name: VnfInstances
+  - name: VnfLcmOpOccs
+paths:
+  /vnf_instances:
+    get:
+      tags:
+        - VnfInstances
+      description: |
+        Query VNF
+        The GET method queries information about multiple VNF instances.
+      parameters:
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |
+            Attribute-based filtering. The VNFM shall support receiving this parameter
+            as part of the URI query string. The NFVO may supply this parameter. All
+            attribute names that appear in the VnfInstance and in data types referenced
+            from it shall be supported by the VNFM in the filter expression
+          schema:
+            type: string
+        - name: all_fields
+          in: query
+          description: |
+            This URI query parameter requests that all complex attributes are included
+            in the response, including those suppressed by exclude_default. It is
+            inverse to the "exclude_default" parameter
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: |
+            This URI query parameter requests that only the listed complex attributes
+            are included in the response. The parameter shall be formatted as a list of
+            attribute names. An attribute name shall either be the name of an attribute,
+            or a path consisting of the names of multiple attributes with parent-child
+            relationship, separated by "/". Attribute names in the list shall be
+            separated by comma (","). Valid attribute names for a particular GET request
+            are the names of all complex attributes in the expected response that have a
+            lower cardinality bound of 0 and that are not conditionally mandatory
+          schema:
+            type: string
+        - name: exclude_fields
+          in: query
+          description: |
+            This URI query parameter requests that the listed complex attributes are
+            excluded from the response. For the format, eligible attributes and support
+            by the API producer, the provisions defined for the "fields" parameter shall
+            apply.
+          schema:
+            type: string
+        - name: exclude_default
+          in: query
+          description: |
+            Presence of this URI query parameter requests that a default set of complex
+            attributes shall be excluded from the response. The default set is defined
+            per resource in the present document. Not every resource will necessarily
+            have such a default set. Only complex attributes with a lower cardinality
+            bound of zero that are not conditionally mandatory can be included in the
+            set.
+            This parameter is a flag, i.e. it has no value.
+            If a resource supports attribute selectors and none of the attribute
+            selector parameters is specified in a GET request, the "exclude_default"
+            parameter shall be assumed as the default..The
+            following attributes shall be excluded from the VnfInstance structure in the
+            response body if this parameter is provided, or none of the parameters
+            "all_fields," "fields", "exclude_fields", "exclude_default" are provided:
+            - vnfConfigurableProperties
+            - vimConnectionInfo
+            - metadata
+            - extensions
+          schema:
+            type: boolean
+            default: false
+        - name: nextpage_opaque_marker
+          in: query
+          description: |
+            Marker to obtain the next page of a paged response. Shall be supported by
+            the VNFM if the VNFM supports alternative 2 (paging) according to clause 4.
+            .2.1 for this resource
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            OK Information about zero or more VNF instances was queried successfully. The response body shall contain representations of zero or more VNF instances.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VnfInstanceResponse'
+        "400":
+          description: |
+            Bad Request Invalid attribute-based filtering expression. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error
+             ---
+            Invalid attribute selector. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error.
+             ---
+            Response too big. If the VNFM supports alternative 1 (error) according to clause 4.7.2.1 for this resource, this error response shall follow the provisions in clause 4.7.2.2
+          headers:
+            WWW-Authenticate:
+              description: |
+                Challenge if the corresponding HTTP request has not provided authorization, or error details if the corresponding HTTP request has provided an invalid authorization token.
+              schema:
+                type: string
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "422":
+          description: |
+            Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    post:
+      tags:
+        - VnfInstances
+      description: |
+        Create VNF Identifier
+        The POST method creates a new VNF instance resource.
+      parameters:
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: |
+            The MIME type of the body of the request. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The VNF creation parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVnfRequest'
+      responses:
+        "201":
+          description: A VNF Instance identifier was created successfully
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+            Location:
+              description: The resource URI of the created VNF instance
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnfInstanceResponse'
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "412":
+          description: |
+            Precondition Failed A precondition given in an HTTP request header is not fulfilled. Typically, this is due to an ETag mismatch, indicating that the resource was modified by another entity. The response body should contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "413":
+          description: |
+            Payload Too Large If the payload body of a request is larger than the amount of data the API producer is willing or able to process, it shall respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for closing the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "414":
+          description: |
+            URI Too Long If the request URI of a request is longer than the API producer is willing or able to process, it shall respond with this response code. This condition can e.g. be caused by passing long queries in the request URI of a GET request. The "ProblemDetails" structure may be omitted
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "422":
+          description: |
+            Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-codegen-request-body-name: createVnfRequest
+  /vnf_instances/{vnfInstanceId}:
+    get:
+      tags:
+        - VnfInstances
+      description: |
+        Query VNF The GET method retrieves information about a VNF instance by reading an individual VNF instance resource.
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            Identifier of the VNF instance. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            OK Information about an individual VNF instance was read successfully. The response body shall contain a representation of the VNF instance.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnfInstanceResponse'
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "422":
+          description: |
+            Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+        - VnfInstances
+      description: |-
+        Delete VNF Identifier
+        This method deletes an individual VNF instance resource.
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            Identifier of the VNF instance. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: |
+            No Content
+            The VNF instance resource and the associated VNF identifier were deleted successfully. The response body shall be empty.
+          content: {}
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "422":
+          description: |
+            Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /vnf_instances/{vnfInstanceId}/instantiate:
+    post:
+      tags:
+        - VnfInstances
+      description: |
+        Instantiate VNF
+
+        The POST method instantiates a VNF instance.
+      x-codegen-request-body-name: InstantiateVnfRequest
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            Identifier of the VNF instance. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: |
+            The MIME type of the body of the request. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Parameters for the VNF instantiation.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstantiateVnfRequest'
+        required: true
+      responses:
+        "202":
+          description: |
+            Accepted
+            The request was accepted for processing, but the  processing has not been completed. The response body shall be empty. The HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+          headers:
+            Location:
+              description: The resource URI of the created VNF instance
+              schema:
+                type: string
+                format: url
+          content: {}
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "422":
+          description: |
+            Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /vnf_lcm_op_occs:
+    get:
+      tags:
+        - VnfLcmOpOccs
+      description: |
+        Get Operation Status
+        The client can use this method to query status information about multiple VNF lifecycle management operation occurrences.
+      parameters:
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |
+            Attribute-based filtering expression.
+            The VNFM shall support receiving this parameter as part of the URI query
+            string. The NFVO may supply this parameter.
+            All attribute names that appear in the VnfLcmOpOcc and in data types
+            referenced from it shall be supported by the VNFM in the filter expression.
+          schema:
+            type: string
+        - name: all_fields
+          in: query
+          description: |
+            This URI query parameter requests that all complex attributes are included in the response,
+            including those suppressed by exclude_default. It is inverse to the "exclude_default"
+            parameter. The API producer shall support this parameter for certain resources. Details are
+            defined in the clauses specifying the actual resources.
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: |
+            This URI query parameter requests that only the listed complex attributes are included in
+            the response.
+            The parameter shall be formatted as a list of attribute names. An attribute name shall either
+            be the name of an attribute, or a path consisting of the names of multiple attributes with
+            parent-child relationship, separated by "/". Attribute names in the list shall be separated by
+            comma (","). Valid attribute names for a particular GET request are the names of all
+            complex attributes in the expected response that have a lower cardinality bound of 0 and
+            that are not conditionally mandatory.
+            The API producer should support this parameter for certain resources. Details are defined
+            in the clauses specifying the actual resources.
+          schema:
+            type: string
+        - name: exclude_fields
+          in: query
+          description: |
+            This URI query parameter requests that the listed complex attributes are excluded from the
+            response. For the format, eligible attributes and support by the API producer, the provisions
+            defined for the "fields" parameter shall apply.
+          schema:
+            type: string
+        - name: exclude_default
+          in: query
+          description: |
+            Indicates to exclude the following complex attributes from the response. See
+            clause 4.3.3 for details. The VNFM shall support this parameter.
+            The following attributes shall be excluded from the VnfLcmOpOcc structure in
+            the response body if this parameter is provided, or none of the parameters
+            "all_fields," "fields", "exclude_fields", "exclude_default" are provided:
+            - operationParams
+            - error
+            - resourceChanges
+            - changedInfo
+            - changedExtConnectivity
+          schema:
+            type: boolean
+            default: false
+        - name: nextpage_opaque_marker
+          in: query
+          description: |
+            Marker to obtain the next page of a paged response. Shall be supported by the
+            VNFM if the VNFM supports alternative 2 (paging) according to clause 4.7.2.1
+            for this resource.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            OK
+            Status information for zero or more VNF lifecycle management operation occurrences was queried successfully. The response body shall contain status information about zero or more VNF lifecycle operation occurrences.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: |
+                  This type represents a VNF lifecycle management operation occurrence.
+                items:
+                  $ref: '#/components/schemas/VnfLcmOpOcc'
+        "400":
+          description: |
+            Bad Request Invalid attribute-based filtering expression. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error
+             ---
+            Invalid attribute selector. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error.
+             ---
+            Response too big. If the VNFM supports alternative 1 (error) according to clause 4.7.2.1 for this resource, this error response shall follow the provisions in clause 4.7.2.2
+          headers:
+            WWW-Authenticate:
+              description: |
+                Challenge if the corresponding HTTP request has not provided authorization, or error details if the corresponding HTTP request has provided an invalid authorization token.
+              schema:
+                type: string
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /vnf_lcm_op_occs/{vnfLcmOpOccId}:
+    get:
+      tags:
+        - VnfLcmOpOccs
+      description: |
+        Get Operation Status
+
+        The client can use this method to retrieve status information about a VNF lifecycle management operation occurrence by reading an individual "VNF LCM operation occurrence" resource.
+      parameters:
+        - name: vnfLcmOpOccId
+          in: path
+          description: |
+            Identifier of a VNF lifecycle management operation occurrence. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a PATCH or POST request triggering a VNF LCM operation. It can also be retrieved from the "vnfLcmOpOccId" attribute in the VnfLcmOperationOccurrenceNotification.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            OK
+            Information about an individual VNF instance was queried successfully. The response body shall contain status information about a VNF lifecycle management operation occurrence.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnfLcmOpOcc'
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /vnf_instances/{vnfInstanceId}/terminate:
+    post:
+      tags:
+        - VnfInstances
+      description: |
+        Terminate VNF
+
+        The POST method terminates a VNF instance.
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            The identifier of the VNF instance to be terminated. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: |
+            The MIME type of the body of the request. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Parameters for the VNF termination.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminateVnfRequest'
+        required: true
+      responses:
+        "202":
+          description: |
+            Accepted
+            The request was accepted for processing, but the processing has not been completed. On success, the HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+            Location:
+              description: The resource URI of the created VNF instance
+              schema:
+                type: string
+                format: url
+          content: {}
+        "400":
+          description: |
+            Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-codegen-request-body-name: TerminateVnfRequest
+  /vnf_instances/{vnfInstanceId}/change_flavour:
+    post:
+      tags:
+        - VnfInstances
+      description: |
+        ChangeFlavourInfo VNF
+
+        The POST method changes a VNF instance.
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            The identifier of the VNF instance to be changed. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: |
+            The MIME type of the body of the request. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Parameters for the VNF change package info.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeFlavourVnfRequest'
+        required: true
+      responses:
+        "202":
+          description: |
+            Accepted
+            The request was accepted for processing, but the processing has not been completed. On success, the HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+            Location:
+              description: The resource URI of the created VNF instance
+              schema:
+                type: string
+                format: url
+          content: {}
+        "400":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-codegen-request-body-name: ChangeFlavourVnfRequest
+  /vnf_instances/{vnfInstanceId}/change_vnfpkg:
+    post:
+      tags:
+        - VnfInstances
+      description: |
+        ChangePackageInfo VNF
+
+        The POST method changes a VNF instance.
+      parameters:
+        - name: vnfInstanceId
+          in: path
+          description: |
+            The identifier of the VNF instance to be changed. This identifier can be retrieved from the resource referenced by the "Location" HTTP header in the response to a POST request creating a new VNF instance resource. It can also be retrieved from the "id" attribute in the payload body of that response.
+          required: true
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: |
+            Content-Types that are acceptable for the response. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: |
+            The MIME type of the body of the request. Reference: IETF RFC 7231
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Parameters for the VNF change package info.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePackageInfoVnfRequest'
+        required: true
+      responses:
+        "202":
+          description: |
+            Accepted
+            The request was accepted for processing, but the processing has not been completed. On success, the HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+            Location:
+              description: The resource URI of the created VNF instance
+              schema:
+                type: string
+                format: url
+          content: {}
+        "400":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "401":
+          description: |
+            Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "403":
+          description: |
+            Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: |
+            Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "405":
+          description: |
+            Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "406":
+          description: |
+            Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "409":
+          description: |
+            Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "416":
+          description: |
+            Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "500":
+          description: |
+            Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "503":
+          description: |
+            Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+          headers:
+            Content-Type:
+              description: The MIME type of the body of the response.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-codegen-request-body-name: ChangePackageInfoVnfRequest
+components:
+  schemas:
+    VnfLcmOpOcc:
+      title: VnfLcmOpOcc
+      required:
+        - _links
+        - automaticInvocation
+        - cancelPending
+        - id
+        - operation
+        - operationParams
+        - operationState
+        - requestSourceType
+        - startTime
+        - stateEnteredTime
+        - vnfInstanceId
+      type: object
+      properties:
+        id:
+          type: string
+          description: |
+            An identifier with the intention of being globally unique.
+        operationState:
+          type: string
+          description: |
+            Value | Description ------|------------ STARTING | The LCM operation is starting. PROCESSING | The LCM operation is currently in execution. COMPLETED | he LCM operation has been completed successfully. FAILED_TEMP | The LCM operation has failed and execution has stopped, but the execution of the operation is not considered to be closed. FAILED | The LCM operation has failed and it cannot be retried or rolled back, as it is determined that such action won't succeed. ROLLING_BACK | The LCM operation is currently being rolled back. ROLLED_BACK | The LCM operation has been successfully rolled back, i.e. The state of the VNF prior to the original operation invocation has been restored as closely as possible.
+          enum:
+            - STARTING
+            - PROCESSING
+            - COMPLETED
+            - FAILED_TEMP
+            - FAILED
+            - ROLLING_BACK
+            - ROLLED_BACK
+        vnfInstanceId:
+          type: string
+          description: |
+            An identifier with the intention of being globally unique.
+        grantId:
+          type: string
+          description: |
+            An identifier with the intention of being globally unique.
+        stateEnteredTime:
+          type: string
+          description: |
+            Date-time when the current state was entered.
+          format: date-time
+        startTime:
+          type: string
+          description: |
+            An identifier with the intention of being globally unique.
+          format: date-time
+        operation:
+          type: string
+          description: |
+            Value | Description ------|------------ INSTANTIATE | Represents the "Instantiate VNF" LCM operation.    SCALE | Represents the "Scale VNF" LCM operation. SCALE_TO_LEVEL | Represents the "Scale VNF to Level" LCM operation. CHANGE_FLAVOUR | Represents the "Change VNF Flavour" LCM operation. TERMINATE | Represents the "Terminate VNF" LCM operation. HEAL | Represents the "Heal VNF" LCM operation. OPERATE | Represents the "Operate VNF" LCM operation. CHANGE_EXT_CONN | Represents the "Change external VNF connectivity" LCM operation. MODIFY_INFO | Represents the "Modify VNF Information" LCM operation.
+          enum:
+            - INSTANTIATE
+            - SCALE
+            - SCALE_TO_LEVEL
+            - CHANGE_FLAVOUR
+            - TERMINATE
+            - HEAL
+            - OPERATE
+            - CHANGE_EXT_CONN
+            - MODIFY_INFO
+            - CHANGE_VNFPKG
+        requestSourceType:
+          type: string
+          description: |
+            Option for the request type
+        operationParams:
+          title: OperationParams
+          required:
+            - additionalParams
+            - flavourId
+            - instantiationLevelId
+            - vimConnectionInfo
+          type: object
+          properties:
+            extVirtualLinks:
+              type: object
+              properties: { }
+            additionalParams:
+              title: AdditionalParams
+              required:
+                - dataVNFSpecific
+                - dataWorkerNodesSpecific
+              type: object
+              properties:
+                dataWorkerNodesSpecific:
+                  title: DataWorkerNodesSpecific
+                  required:
+                    - cinder_availability_zone
+                    - ingressNodesLimit
+                    - logger_enabled
+                    - node_pools
+                    - nova_availability_zone
+                    - requiresCompensation
+                    - stackRollback
+                  type: object
+                  properties:
+                    requiresCompensation:
+                      type: string
+                    stackRollback:
+                      type: string
+                    ingressNodesLimit:
+                      type: integer
+                    node_pools:
+                      type: array
+                      items:
+                        title: NodePool
+                        required:
+                          - count
+                          - external_networks
+                          - flavor
+                          - image
+                          - labels
+                          - name
+                          - root_volume_size
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          image:
+                            type: string
+                          flavor:
+                            type: string
+                          count:
+                            type: integer
+                          root_volume_size:
+                            type: integer
+                          labels:
+                            type: array
+                            items:
+                              type: string
+                          external_networks:
+                            title: ExternalNetworks
+                            required:
+                              - undefined
+                            type: object
+                            properties:
+                              undefined:
+                                type: boolean
+                    logger_enabled:
+                      type: string
+                    nova_availability_zone:
+                      type: string
+                    cinder_availability_zone:
+                      type: string
+                dataVNFSpecific:
+                  title: DataVNFSpecific
+                  required:
+                    - namespace
+                  type: object
+                  properties:
+                    namespace:
+                      type: string
+            flavourId:
+              type: string
+            vimConnectionInfo:
+              type: array
+              items:
+                title: VimConnectionInfo
+                required:
+                  - accessInfo
+                  - extra
+                  - id
+                  - interfaceInfo
+                  - vimId
+                  - vimType
+                type: object
+                properties:
+                  id:
+                    type: string
+                  vimId:
+                    type: string
+                  vimType:
+                    type: string
+                  interfaceInfo:
+                    title: InterfaceInfo
+                    required:
+                      - identityEndPoint
+                    type: object
+                    properties:
+                      identityEndPoint:
+                        type: string
+                  accessInfo:
+                    title: AccessInfo
+                    required:
+                      - credentials
+                      - projectId
+                    type: object
+                    properties:
+                      projectId:
+                        type: string
+                      credentials:
+                        title: Credentials
+                        required:
+                          - password
+                          - username
+                        type: object
+                        properties:
+                          username:
+                            type: string
+                          password:
+                            type: string
+                  extra:
+                    type: object
+                    properties: { }
+            instantiationLevelId:
+              type: string
+          description: |
+            This type represents a list of key-value pairs. The order of the pairs in the list is not significant. In JSON, a set of key- value pairs is represented as an object. It shall comply with the provisions  defined in clause 4 of IETF RFC 7159.
+        cancelPending:
+          type: boolean
+          description: |
+            If the VNF LCM operation occurrence is in "STARTING", "PROCESSING" or "ROLLING_BACK" state and the operation is being cancelled, this attribute shall be set to true. Otherwise, it shall be set to false.
+        _links:
+          title: VnfLcmOpOccLinks
+          required:
+            - instantiate
+            - self
+          type: object
+          properties:
+            self:
+              $ref: '#/components/schemas/URILink'
+            instantiate:
+              $ref: '#/components/schemas/URILink'
+          description: |
+            Links to resources related to this resource.
+        automaticInvocation:
+          type: boolean
+          description: |
+            Set to true if this VNF LCM operation occurrence has been triggered by an automated procedure inside the VNFM (i.e. ScaleVnf / ScaleVnfToLevel triggered by auto-scale, or HealVnf triggered by auto-heal). Set to false otherwise.
+      description: |
+        This type represents a VNF lifecycle management operation occurrence.
+    TerminateVnfRequest:
+      required:
+        - terminationType
+      type: object
+      properties:
+        terminationType:
+          type: string
+          description: |
+            Indicates whether forceful or graceful termination is requested. Permitted values: * FORCEFUL: The VNFM will shut down the VNF and release the
+              resources immediately after accepting the request.
+          enum:
+            - FORCEFUL
+            - GRACEFUL
+        additionalParams:
+          type: object
+          properties: { }
+          description: |
+            This type represents a list of key-value pairs. The order of the pairs in the list is not significant. In JSON, a set of key- value pairs is represented as an object. It shall comply with the provisions  defined in clause 4 of IETF RFC 7159. The supported additional parameters: * **cleanUpResources** [OPTIONAL] Remove Persistent Volume Claims and Persistent Volumes of an application (Defaulted to false) * **pvcTimeOut** [OPTIONAL] Specifies the time to wait for Persistent Volume Claims to delete (Defaulted to 100 secs) * **applicationTimeOut:** [OPTIONAL] Maximum time allocated for application to terminate (Defaulted to 270s) * **skipVerification:** [OPTIONAL] Flag indicating whether to bypass the Application Verification Checks (Defaulted to false) * **commandTimeout:** [OPTIONAL] Maximum time allocated for helm/kubectl commands to execute (Defaulted to 300s)
+    ChangePackageInfoVnfRequest:
+      required:
+        - vnfdId
+      type: object
+      properties:
+        vnfdId:
+          pattern: ^(?!\s*$).+
+          type: string
+          description: |
+            The identifier of the VNF descriptor
+          x-pattern-message: must not be blank
+        additionalParams:
+          type: object
+          properties: { }
+          description: |
+            This type represents a list of key-value pairs. The order of the pairs in the list is not significant. In JSON, a set of key- value pairs is represented as an object. It shall comply with the provisions  defined in clause 4 of IETF RFC 7159.
+            The supported EVNFM additional parameters: * **applicationTimeOut:** [OPTIONAL] Maximum time allocated for application instantiation (Defaulted to 270s) * **cleanUpResources** [OPTIONAL] Remove Persistent Volume Claims and Persistent Volumes of an application (Defaulted to false) * **commandTimeOut:** [OPTIONAL] Maximum time allocated for helm/kubectl commands to execute (Defaulted to 300s) * **skipVerification:** [OPTIONAL] Flag indicating whether to bypass the Application Verification Checks (Defaulted to false) * **helmWait:** [OPTIONAL] If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment are in a ready state before marking the release as successful. It will wait for as long as specified by commandTimeOut.
+            Application specific values: These parameters are optional and only required for certain situations. Values can be overwritten here. * **someKey**: **someValue** [OPTIONAL]  A value to be overwritten,  e.g. es.timeout
+    ChangeFlavourVnfRequest:
+      required:
+        - vnfdId
+      type: object
+      properties:
+        vnfdId:
+          type: string
+          description: |
+            The identifier of the VNF descriptor
+        additionalParams:
+          type: object
+          properties: { }
+          description: |
+            This type represents a list of key-value pairs. The order of the pairs in the list is not significant. In JSON, a set of key- value pairs is represented as an object. It shall comply with the provisions  defined in clause 4 of IETF RFC 7159.
+            The supported EVNFM additional parameters: * **applicationTimeOut:** [OPTIONAL] Maximum time allocated for application instantiation (Defaulted to 270s) * **cleanUpResources** [OPTIONAL] Remove Persistent Volume Claims and Persistent Volumes of an application (Defaulted to false) * **commandTimeOut:** [OPTIONAL] Maximum time allocated for helm/kubectl commands to execute (Defaulted to 300s) * **skipVerification:** [OPTIONAL] Flag indicating whether to bypass the Application Verification Checks (Defaulted to false) * **helmWait:** [OPTIONAL] If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment are in a ready state before marking the release as successful. It will wait for as long as specified by commandTimeOut.
+            Application specific values: These parameters are optional and only required for certain situations. Values can be overwritten here. * **someKey**: **someValue** [OPTIONAL]  A value to be overwritten,  e.g. es.timeout
+    InstantiateVnfRequest:
+      type: object
+      properties:
+        flavourId:
+          type: string
+          description: |
+            An identifier that is unique within a VNF descriptor.
+        instantiationLevelId:
+          type: string
+          description: |
+            An identifier that is unique within a VNF descriptor.
+        extVirtualLinks:
+          type: array
+          description: |
+            Information about external VLs to connect the VNF to.
+          items:
+            required:
+              - extCps
+              - id
+              - resourceId
+            type: object
+            properties:
+              id:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              vimConnectionId:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              resourceProviderId:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              resourceId:
+                type: string
+                description: |
+                  An identifier maintained by the VIM or other resource provider. It is expected to be unique within the VIM instance.
+              extCps:
+                type: array
+                description: |
+                  External CPs of the VNF to be connected to this external VL.
+                items:
+                  required:
+                    - cpdId
+                  type: object
+                  properties:
+                    cpdId:
+                      type: string
+                      description: |
+                        An identifier that is unique within a VNF descriptor.
+                    cpConfig:
+                      type: array
+                      description: |
+                        List of instance data that need to be configured on the CP instances created from the respective CPD.
+                      items:
+                        type: object
+                        properties:
+                          cpInstanceId:
+                            type: string
+                            description: |
+                              An identifier that is unique for the respective type within a VNF instance, but may not be globally unique.
+                          linkPortId:
+                            type: string
+                            description: |
+                              An identifier with the intention of being globally unique.
+                          cpProtocolData:
+                            type: array
+                            description: |
+                              Parameters for configuring the network protocols on the link port that connects the CP to a VL.  The following conditions apply to the attributes "linkPortId" and "cpProtocolData":  * The "linkPortId" and "cpProtocolData" attributes shall both be
+                                absent for the deletion of an existing external CP instance
+                                addressed by cpInstanceId.
+                              * At least one of these attributes shall be present for a
+                                to-be-created external CP instance or an existing external
+                                CP instance.
+                              * If the "linkPortId" attribute is absent, the VNFM shall create a
+                                link port.
+                              * If the "cpProtocolData" attribute is absent, the "linkPortId"
+                                attribute shall be provided referencing a pre-created link port,
+                                and the VNFM can use means outside the scope of the present
+                                document to obtain the pre-configured address information for the
+                                connection point from the resource representing the link port.
+                              * If both "cpProtocolData" and "linkportId" are provided, the API
+                                consumer shall ensure that the cpProtocolData can be used with the
+                                pre-created link port referenced by "linkPortId".
+                            items:
+                              required:
+                                - layerProtocol
+                              type: object
+                              properties:
+                                layerProtocol:
+                                  type: string
+                                  description: |
+                                    Identifier of layer(s) and protocol(s). This attribute allows to signal the addition of further types of layer and protocol in future versions of the present document in a backwards-compatible way. In the current version of the present document, only IP over Ethernet is supported.
+                                  enum:
+                                    - IP_OVER_ETHERNET
+                                ipOverEthernet:
+                                  type: object
+                                  properties:
+                                    macAddress:
+                                      type: string
+                                      description: |
+                                        A MAC address. Representation: string that consists of groups of two hexadecimal digits, separated by hyphens or colons.
+                                      format: MAC
+                                    ipAddresses:
+                                      type: array
+                                      description: |
+                                        List of IP addresses to assign to the CP instance. Each entry represents IP address data for fixed or dynamic IP address assignment per subnet. If this attribute is not present, no IP address shall be assigned.
+                                      items:
+                                        required:
+                                          - type
+                                        type: object
+                                        properties:
+                                          type:
+                                            type: string
+                                            description: |
+                                              The type of the IP addresses. Permitted values: IPV4, IPV6.
+                                            enum:
+                                              - IPV4
+                                              - IPV6
+                                          fixedAddresses:
+                                            type: array
+                                            description: |
+                                              Fixed addresses to assign (from the subnet defined by "subnetId" if provided). Exactly one of "fixedAddresses", "numDynamicAddresses" or "ipAddressRange" shall be present.
+                                            items:
+                                              type: string
+                                              description: |
+                                                An IPV4 or IPV6 address. Representation: In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that  consists of groups of zero to four hexadecimal digits, separated by colons.
+                                              format: IP
+                                          numDynamicAddresses:
+                                            type: integer
+                                            description: |
+                                              Number of dynamic addresses to assign (from the subnet defined by "subnetId" if provided). Exactly one of "fixedAddresses", "numDynamicAddresses" or "ipAddressRange" shall be present.
+                                          addressRange:
+                                            required:
+                                              - maxAddress
+                                              - minAddress
+                                            type: object
+                                            properties:
+                                              minAddress:
+                                                type: string
+                                                description: |
+                                                  An IPV4 or IPV6 address. Representation: In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that  consists of groups of zero to four hexadecimal digits, separated by colons.
+                                                format: IP
+                                              maxAddress:
+                                                type: string
+                                                description: |
+                                                  An IPV4 or IPV6 address. Representation: In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that  consists of groups of zero to four hexadecimal digits, separated by colons.
+                                                format: IP
+                                            description: |
+                                              An IP address range to be used, e.g. in case of egress connections. In case this attribute is present, IP addresses from the range will be used.
+                                          subnetId:
+                                            type: string
+                                            description: |
+                                              An identifier maintained by the VIM or other resource provider. It is expected to be unique within the VIM instance.
+                                  description: |
+                                    This type represents network address data for IP over Ethernet.
+                              description: |
+                                This type represents network protocol data.
+                        description: |
+                          This type represents an externally provided link port or network address information per instance of an external connection point. In case a link port is provided, the VNFM shall use that link port when connecting the external CP to the external VL. In a link port is not provided, the VNFM shall create a link port on the external VL, and use that link port to connect the external CP to the external VL.
+                  description: |
+                    This type represents configuration information for external CPs created from a CPD.
+              extLinkPorts:
+                type: array
+                description: |
+                  Externally provided link ports to be used to connect external connection points to this external VL. If this attribute is not present, the VNFM shall create the link ports on the external VL.
+                items:
+                  required:
+                    - id
+                    - resourceHandle
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: |
+                        An identifier with the intention of being globally unique.
+                    resourceHandle:
+                      required:
+                        - resourceId
+                        - vimConnectionId
+                      type: object
+                      properties:
+                        vimConnectionId:
+                          type: string
+                          description: |
+                            An identifier with the intention of being globally unique.
+                        resourceProviderId:
+                          type: string
+                          description: |
+                            An identifier with the intention of being globally unique.
+                        resourceId:
+                          type: string
+                          description: |
+                            An identifier maintained by the VIM or other resource provider. It is expected to be unique within the VIM instance.
+                        vimLevelResourceType:
+                          type: string
+                          description: |
+                            Type of the resource in the scope of the VIM or the resource provider.
+                      description: |
+                        This type represents the information that allows addressing a virtualised resource that is used by a VNF instance. Information about the resource is available from the VIM.
+                  description: |
+                    This type represents an externally provided link port to be used to connect an external connection point to an external VL.
+            description: |
+              This type represents an external VL.
+        extManagedVirtualLinks:
+          type: array
+          description: |
+            Information about internal VLs that are managed by the NFVO.
+          items:
+            required:
+              - id
+              - resourceId
+              - virtualLinkDescId
+            type: object
+            properties:
+              id:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              virtualLinkDescId:
+                type: string
+                description: |
+                  An identifier that is unique within a VNF descriptor.
+              vimConnectionId:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              resourceProviderId:
+                type: string
+                description: |
+                  An identifier with the intention of being globally unique.
+              resourceId:
+                type: string
+                description: |
+                  An identifier maintained by the VIM or other resource provider. It is expected to be unique within the VIM instance.
+        localizationLanguage:
+          type: string
+          description: |
+            Localization language of the VNF to be instantiated. The value shall comply with the format defined in IETF RFC 5646.
+        additionalParams:
+          type: object
+          properties: { }
+          description: |
+            This type represents a list of key-value pairs. The order of the pairs in the list is not significant. In JSON, a set of key- value pairs is represented as an object. It shall comply with the provisions  defined in clause 4 of IETF RFC 7159.
+            The supported EVNFM additional parameters: * **namespace:** [OPTIONAL] The namespace the application is to be deployed into (Defaulted to default) * **applicationTimeOut:** [OPTIONAL] Maximum time allocated for application instantiation (Defaulted to 270s) * **cleanUpResources** [OPTIONAL] Remove Persistent Volume Claims and Persistent Volumes of an application (Defaulted to false) * **commandTimeOut:** [OPTIONAL] Maximum time allocated for helm/kubectl commands to execute (Defaulted to 300s) * **skipVerification:** [OPTIONAL] Flag indicating whether to bypass the Application Verification Checks (Defaulted to false) * **helmWait:** [OPTIONAL] If set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment are in a ready state before marking the release as successful. It will wait for as long as specified by commandTimeOut.
+            Application specific values: These parameters are optional and only required for certain situations. Values can be overwritten here. * **someKey**: **someValue** [OPTIONAL]  A value to be overwritten,  e.g. es.timeout
+    CreateVnfRequest:
+      required:
+        - vnfInstanceName
+        - vnfdId
+      type: object
+      properties:
+        vnfdId:
+          maxLength: 60
+          minLength: 1
+          type: string
+          description: |
+            Identifier that identifies the VNFD which defines the VNF instance to be created.
+        vnfInstanceName:
+          minLength: 1
+          pattern: "[a-z]([-a-z0-9]*[a-z0-9])?"
+          type: string
+          description: |
+            Human-readable name of the VNF instance to be created.
+          x-pattern-message: "must consist of lower case alphanumeric characters\
+            \ or -. It must start with an alphabetic character, and end with\
+            \ an alphanumeric character"
+        vnfInstanceDescription:
+          type: string
+          description: |
+            Human-readable description of the VNF instance to be created.
+    ProblemDetails:
+      required:
+        - detail
+        - status
+      type: object
+      properties:
+        type:
+          type: string
+          description: |
+            A URI reference according to IETF RFC 3986 [5] that identifies the problem type. It is encouraged that the URI provides human-readable documentation for the problem (e.g. using HTML) when dereferenced. When this member is not present, its value is assumed to be "about:blank".
+          format: URI
+        title:
+          type: string
+          description: |
+            A short, human-readable summary of the problem type. It should not change from occurrence to occurrence of the problem, except for purposes of localization. If type is given and other than "about:blank", this attribute shall also be provided. A short, human-readable summary of the problem type.  It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [RFC7231], Section 3.4).
+        status:
+          type: integer
+          description: |
+            The HTTP status code for this occurrence of the problem. The HTTP status code ([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.
+        detail:
+          type: string
+          description: |
+            A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          description: |
+            A URI reference that identifies the specific occurrence of the problem. It may yield further information if dereferenced.
+          format: URI
+      description: |
+        The definition of the general "ProblemDetails" data structure from IETF RFC 7807 [19] is reproduced in this structure. Compared to the general framework defined in IETF RFC 7807 [19], the "status" and "detail" attributes are mandated to be included by the present document, to ensure that the response contains additional textual information about an error. IETF RFC 7807 [19] foresees extensibility of the "ProblemDetails" type. It is possible that particular APIs in the present document, or particular implementations, define extensions to define additional attributes that provide more information about the error. The description column only provides some explanation of the meaning to Facilitate understanding of the design. For a full description, see IETF RFC 7807 [19].
+    VnfInstanceResponse:
+      required:
+        - id
+        - instantiationState
+        - onboardedVnfPkgInfoId
+        - vnfProductName
+        - vnfProvider
+        - vnfSoftwareVersion
+        - vnfdId
+        - vnfdVersion
+      type: object
+      properties:
+        id:
+          type: string
+          description: |
+            Identifier of the VNF instance.
+        vnfInstanceName:
+          type: string
+          description: |
+            Name of the VNF instance. This attribute can be modified with the PATCH method.
+        vnfInstanceDescription:
+          type: string
+          description: |
+            Human-readable description of the VNF instance. This attribute can be modified with the PATCH method.
+        vnfdId:
+          type: string
+          description: |
+            Identifier of the VNFD on which the VNF instance is based.
+        vnfProvider:
+          type: string
+          description: |
+            Provider of the VNF and the VNFD. The value is copied from the VNFD.
+        vnfProductName:
+          type: string
+          description: |
+            Name to identify the VNF Product. The value is copied from the VNFD.
+        vnfSoftwareVersion:
+          type: string
+          description: |
+            Software version of the VNF. The value is copied from the VNFD.
+        vnfdVersion:
+          type: string
+          description: |
+            Identifies the version of the VNFD. The value is copied from the VNFD.
+        onboardedVnfPkgInfoId:
+          type: string
+          description: |
+            Identifier of information held by the NFVO about the specific VNF package on which the VNF is based. This identifier was allocated by the NFVO. This attribute can be modified with the PATCH method.
+        instantiationState:
+          type: string
+          description: |
+            The instantiation state of the VNF.
+            Permitted values:
+            NOT_INSTANTIATED: The VNF instance is
+            terminated or not instantiated.
+            INSTANTIATED: The VNF instance is instantiated.
+          enum:
+            - NOT_INSTANTIATED
+            - INSTANTIATED
+      description: |
+        This type represents a VNF instance.
+    URILink:
+      required:
+        - href
+      type: object
+      properties:
+        href:
+          type: string
+          description: |
+            URI of the referenced resource.
+          format: url
+      description: |
+        This type represents a link to a resource.
+        type: object
+  responses:
+    BasicOk:
+      description: |
+        OK
+        The request has succeeded.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content: {}
+    Accepted:
+      description: |
+        Accepted
+        The request was accepted for processing, but the  processing has not been completed. The response body shall be empty. The HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+      headers:
+        Location:
+          description: The resource URI of the created VNF instance
+          schema:
+            type: string
+            format: url
+      content: {}
+    AcceptedWithContent:
+      description: |
+        Accepted
+        The request was accepted for processing, but the processing has not been completed. On success, the HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+        Location:
+          description: The resource URI of the created VNF instance
+          schema:
+            type: string
+            format: url
+      content: {}
+    BadRequest:
+      description: |
+        Bad Request If the request is malformed or syntactically incorrect (e.g. if the request URI contains incorrect query parameters or the payload body contains a syntactically incorrect data structure), the API producer shall respond with this response code. --- If the response to a GET request which queries a container resource would be so big that the performance of the API producer is adversely affected, and the API producer does not support paging for the affected resource, it shall respond with this response code. --- If there is an application error related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond with this response code.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    BadRequestQuery:
+      description: |
+        Bad Request Invalid attribute-based filtering expression. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error
+         ---
+        Invalid attribute selector. The response body shall contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error.
+         ---
+        Response too big. If the VNFM supports alternative 1 (error) according to clause 4.7.2.1 for this resource, this error response shall follow the provisions in clause 4.7.2.2
+      headers:
+        WWW-Authenticate:
+          description: |
+            Challenge if the corresponding HTTP request has not provided authorization, or error details if the corresponding HTTP request has provided an invalid authorization token.
+          schema:
+            type: string
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Unauthorized:
+      description: |
+        Unauthorized If the request contains no access token even though one is required, or if the request contains an authorization token that is invalid (e.g. expired or revoked), the API producer should respond with this response. The details of the error shall be returned in the WWW-Authenticate HTTP header, as defined in IETF RFC 6750 and IETF RFC 7235. The ProblemDetails structure may be provided.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Forbidden:
+      description: |
+        Forbidden If the API consumer is not allowed to perform a particular request to a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided.  It should include in the "detail" attribute information about the source of the problem, and may indicate how to solve it.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFound:
+      description: |
+        Not Found If the API producer did not find a current representation for the resource addressed by the URI passed in the request, or is not willing to disclose that one exists, it shall respond with this response code.  The "ProblemDetails" structure may be provided, including in the "detail" attribute information about the source of the problem, e.g. a wrong resource URI variable.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    MethodNotAllowed:
+      description: |
+        Method Not Allowed If a particular HTTP method is not supported for a particular resource, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotAcceptable:
+      description: |
+        Not Acceptable If the "Accept" HTTP header does not contain at least one name of a content type that is acceptable to the API producer, the API producer shall respond with this response code. The "ProblemDetails" structure may be omitted in that case.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Conflict:
+      description: |
+        Conflict Another request is in progress that prohibits the fulfilment of the current request, or the current resource state is inconsistent with the request.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    PreconditionFailed:
+      description: |
+        Precondition Failed A precondition given in an HTTP request header is not fulfilled. Typically, this is due to an ETag mismatch, indicating that the resource was modified by another entity. The response body should contain a ProblemDetails structure, in which the "detail" attribute should convey more information about the error.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    PayloadTooLarge:
+      description: |
+        Payload Too Large If the payload body of a request is larger than the amount of data the API producer is willing or able to process, it shall respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for closing the connection. The "ProblemDetails" structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    URITooLong:
+      description: |
+        URI Too Long If the request URI of a request is longer than the API producer is willing or able to process, it shall respond with this response code. This condition can e.g. be caused by passing long queries in the request URI of a GET request. The "ProblemDetails" structure may be omitted
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    RequestedRangeNotSatisfiable:
+      description: |
+        Requested Range Not Satisfiable This code is returned if the requested byte range in the Range HTTP header is not present in the requested resource.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    UnprocessableEntity:
+      description: |
+        Unprocessable Entity If the payload body of a request contains syntactically correct data (e.g. well-formed JSON) but the data cannot be processed (e.g. because it fails validation against a schema), the API producer shall respond with this response code. The "ProblemDetails" structure shall be provided, and should include in the "detail" attribute more information about the source of the problem. NOTE 2: This error response code is only applicable for methods that have a request body.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    InternalServerError:
+      description: |
+        Internal Server Error If there is an application error not related to the client's input that cannot be easily mapped to any other HTTP response code ("catch all error"), the API producer shall respond withthis response code. The "ProblemDetails" structure shall be provided, and shall include in the "detail" attribute more information about the source of the problem.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ServiceUnavailable:
+      description: |
+        Service Unavailable If the API producer encounters an internal overload situation of itself or of a system it relies on, it should respond with this response code, following the provisions in IETF RFC 7231 [13] for the use of the "Retry-After" HTTP header and for the alternative to refuse the connection. The "ProblemDetails" structure may be omitted.
+      headers:
+        Content-Type:
+          description: The MIME type of the body of the response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+

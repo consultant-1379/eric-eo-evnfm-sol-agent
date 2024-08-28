@@ -1,0 +1,9 @@
+[
+  {
+    "id": "63a4bd16-0379-4a4f-ae8c-6d673f47683c",
+    "vnfdId": "345-789-123",
+    "vnfProvider": "Ericsson",
+    "name": "mock response from VNFLCM"
+  }
+
+]

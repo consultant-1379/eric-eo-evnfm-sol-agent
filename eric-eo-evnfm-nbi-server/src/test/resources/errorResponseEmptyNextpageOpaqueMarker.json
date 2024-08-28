@@ -1,0 +1,6 @@
+{
+  "type":"Bad Request",
+  "title":"Wrong query parameter",
+  "status":400,
+  "detail":"Invalid page value for nextpage_opaque_marker:: \"\". Parameter must specify either CVNFM token e.g. \"nextpage_opaque_marker=cvnfm-2\" or VM VNFM token e.g. \"nextpage_opaque_marker=vmvnfm-2020-04-06T13:54:37.786Z\"."
+}

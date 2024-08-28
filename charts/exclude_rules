@@ -1,0 +1,2 @@
+-DhelmDesignRule.setValue.eric-eo-evnfm-nbi.eric-evnfm-rbac="defaultUser.username=vnfm;defaultUser.password=vnfm;log.streamingMethod=indirect;"
+-DhelmDesignRule.config.eric-evnfm-rbac.DR-D1121-064=skip

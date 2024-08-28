@@ -1,0 +1,205 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{/*
+Values for probes
+*/}}
+{{- $probesValue := fromJson (include "eric-eo-evnfm-nbi.probes" .) -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "eric-eo-evnfm-nbi.name" . }}
+  labels: {{- include "eric-eo-evnfm-nbi.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-eo-evnfm-nbi.annotations" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.updateStrategy.type | quote }}
+  {{- if and (eq .Values.updateStrategy.type "RollingUpdate") .Values.updateStrategy.rollingUpdate }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "eric-eo-evnfm-nbi.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- $commonLabels := include "eric-eo-evnfm-nbi.labels.extended-defaults" . | fromYaml }}
+        {{- include "eric-eo-evnfm-library-chart.mergeLabels" (dict "location" .Template.Name "sources" (list
+            $commonLabels)) | trim | nindent 8 }}
+      annotations:
+        {{- $commonAnnotations := include "eric-eo-evnfm-nbi.annotations" . | fromYaml }}
+        {{- $serviceMesh := include "eric-eo-evnfm-nbi.service-mesh-inject" . | fromYaml }}
+        {{- $serviceMeshVersion := include "eric-eo-evnfm-nbi.service-mesh-version" . | fromYaml }}
+        {{- $serviceMeshLogs := include "eric-eo-evnfm-nbi.service-mesh-logs" . | fromYaml }}
+        {{- $serviceMeshExcludeInboundPort := include "eric-eo-evnfm-nbi.excludeInboundPorts" . | fromYaml }}
+        {{- include "eric-eo-evnfm-library-chart.mergeAnnotations" (dict "location" .Template.Name "sources" (list $commonAnnotations
+            $serviceMesh $serviceMeshVersion $serviceMeshLogs $serviceMeshExcludeInboundPort)) | trim | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroup: {{ include "eric-eo-evnfm-nbi.fsGroup" . }}
+      affinity:
+        podAntiAffinity:
+      {{- if eq .Values.affinity.podAntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+      {{- else if eq .Values.affinity.podAntiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+      {{- end }}
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "eric-eo-evnfm-nbi.name" . }}
+              topologyKey: {{ .Values.affinity.topologyKey }}
+      {{- if include "eric-eo-evnfm-nbi.pullSecrets" . }}
+      imagePullSecrets:
+        - name: {{ template "eric-eo-evnfm-nbi.pullSecrets" . }}
+      {{- end }}
+      serviceAccountName: {{ template "eric-eo-evnfm-nbi.serviceAccount.name" . }}
+      {{- if include "eric-eo-evnfm-nbi.podPriority" . }}
+      priorityClassName: {{- include "eric-eo-evnfm-nbi.podPriority" . | indent 2 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ template "eric-eo-evnfm-nbi.mainImagePath" . }}
+          imagePullPolicy: {{ template "eric-eo-evnfm-nbi.imagePullPolicy" . }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - curl
+                  - -X POST
+                  - localhost:8888/actuator/shutdown
+          ports:
+            - name: http
+              containerPort: {{ .Values.container.ports.http }}
+              protocol: TCP
+          env:
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+            - name: SERVICE_ID
+              value: "eric-eo-evnfm-nbi"
+            - name: "SPRING_PROFILES_ACTIVE"
+              value: "prod"
+            - name: "KUBERNETES_MASTER"
+              value: {{ .Values.kubernetes.master }}
+            - name: "ERIC_OSS_EVNFM_NBI_CONFIG"
+              value: {{ .Values.config }}
+            - name: "HZ_CLUSTERNAME"
+              value: {{ template "eric-eo-evnfm-nbi.hazelcast.cluster" . }}
+            - name: "retry.maxAttempts"
+              value: {{ .Values.retry.maxAttempts | quote}}
+            - name: "retry.backoff"
+              value: {{ .Values.retry.backoff | quote}}
+            - name: "spring.codec.max-in-memory-size"
+              value: {{ .Values.maxInMemorySize}}
+      {{- if .Values.global.logging }}
+        {{- if .Values.global.logging.enabled }}
+            - name: LOG_STREAMINGMETHOD
+              value: {{ include "eric-eo-evnfm-nbi.log.streamingMethod" . }}
+          {{- if or (eq (include "eric-eo-evnfm-nbi.log.streamingMethod" .) "dual") (eq (include "eric-eo-evnfm-nbi.log.streamingMethod" .) "direct") }}
+            - name: LOGSTASH_HOST
+              value: "{{ .Values.logging.logstash.host }}"
+            - name: LOGSTASH_PORT
+              value: "{{ .Values.logging.logstash.port }}"
+          {{- end }}
+        {{- end }}
+      {{- end }}
+            {{- if (eq (include "eric-eo-evnfm-nbi.hazelcast-ipv6-enabled" . | trim ) "true") }}
+            - name: JAVA_OPTS
+              value: "-Dhazelcast.prefer.ipv4.stack=false"
+            {{- end }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - all
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsGroup: 241546
+            privileged: false
+          volumeMounts:
+            - name: tmp-data
+              mountPath: /tmp
+              readOnly: false
+          resources:
+            requests:
+            {{- if .Values.resources.nbi.requests.cpu }}
+              cpu: {{ .Values.resources.nbi.requests.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.nbi.requests.memory }}
+              memory: {{ .Values.resources.nbi.requests.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.nbi.requests "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.nbi.requests "ephemeral-storage" | quote }}
+            {{- end }}
+            limits:
+            {{- if .Values.resources.nbi.limits.cpu }}
+              cpu: {{ .Values.resources.nbi.limits.cpu | quote }}
+            {{- end }}
+            {{- if .Values.resources.nbi.limits.memory }}
+              memory: {{ .Values.resources.nbi.limits.memory | quote }}
+            {{- end }}
+            {{- if index .Values.resources.nbi.limits "ephemeral-storage" }}
+              ephemeral-storage: {{ index .Values.resources.nbi.limits "ephemeral-storage" | quote }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.container.ports.http }}
+            initialDelaySeconds: {{ $probesValue.nbi.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $probesValue.nbi.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ $probesValue.nbi.livenessProbe.periodSeconds }}
+            failureThreshold: {{ $probesValue.nbi.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.container.ports.http }}
+            initialDelaySeconds: {{ $probesValue.nbi.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $probesValue.nbi.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ $probesValue.nbi.readinessProbe.periodSeconds }}
+            failureThreshold: {{ $probesValue.nbi.readinessProbe.failureThreshold }}
+      volumes:
+        - name: tmp-data
+          emptyDir: {}
+      {{- if or .Values.nodeSelector (and .Values.global .Values.global.nodeSelector) }}
+      nodeSelector: {{- include "eric-eo-evnfm-nbi.nodeSelector" . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.tolerations (and .Values.global .Values.global.tolerations) }}
+      tolerations: {{ include "eric-eo-evnfm-nbi.tolerations.nbi" . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.nbi | int }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- range $constraints := .Values.topologySpreadConstraints }}
+        - maxSkew: {{ $constraints.maxSkew }}
+          topologyKey: {{ $constraints.topologyKey }}
+          whenUnsatisfiable: {{ $constraints.whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ template "eric-eo-evnfm-nbi.name" $ }}
+              app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+      {{- end }}
+      {{- end }}

@@ -1,0 +1,42 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+global:
+  registry:
+    url: armdocker.rnd.ericsson.se
+    imagePullPolicy: IfNotPresent
+  timezone: UTC
+  hosts:
+    iam:
+    vnfm: default
+  iam:
+    clientId: eo
+    adminSecret: eric-sec-access-mgmt-creds
+    userKey: kcadminid
+    passwordKey: kcpasswd
+    cacert:
+      secretName: iam-cacert-secret
+      key: tls.crt
+      filePath: iam/ca.crt
+  networkPolicy:
+    enabled: true
+  security:
+    privilegedPolicyClusterRoleName: RELEASE-NAME-allowed-use-privileged-policy
+  securityPolicy:
+    rolekind: ""
+  nodeSelector: {}
+  labels: {}
+  annotations: {}

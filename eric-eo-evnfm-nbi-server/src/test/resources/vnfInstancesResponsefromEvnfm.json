@@ -1,0 +1,498 @@
+[
+  {
+    "id": "f3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfInstanceName": "instance-from-evnfm-1",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "sdgdtsg1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfInstanceName": "instance-from-evnfm-2",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "g3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfInstanceName": "instance-from-evnfm-3",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": null,
+    "instantiationState": "NOT_INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/g3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/g3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/g3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/g3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/g3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "jkghdfgxe-4cf4-477c-aadgbfsgfh4e6a389",
+    "vnfInstanceName": "instance-from-evnfm-4",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4-477c-aadgbfsgfh4e6a389",
+    "vnfInstanceName": "instance-from-evnfm-5",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4-sfdtghdfa389",
+    "vnfInstanceName": "instance-from-evnfm-6",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "dfkjgksgsthgxe-4cf4-sfdtghdfa389",
+    "vnfInstanceName": "instance-from-evnfm-7",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4-srgthy",
+    "vnfInstanceName": "instance-from-evnfm-8",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "lsrgt;lyhfdsfkjbe-4cf4-sfdtghdfa389",
+    "vnfInstanceName": "instance-from-evnfm-9",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgdghtlb-dstb389",
+    "vnfInstanceName": "instance-from-evnfm-10",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "lknnjboijhgxe-4cf4sdfa389thry",
+    "vnfInstanceName": "instance-from-evnfm-11",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4-sdjfblky;hfbd",
+    "vnfInstanceName": "instance-from-evnfm-12",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthdfglkbnflykfjfldsf89",
+    "vnfInstanceName": "instance-from-evnfm-13",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tlkn-sfrt7sdf-4cf4-sfdtghdfa389",
+    "vnfInstanceName": "instance-from-evnfm-14",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4dglhjty8drgjfns89",
+    "vnfInstanceName": "instance-from-evnfm-15",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  },
+  {
+    "id": "tujdrt6fdsthgxe-4cf4-sfdtghdfa389fdakjdb",
+    "vnfInstanceName": "instance-from-evnfm-16",
+    "vnfInstanceDescription": "vnfInstanceDescription",
+    "vnfdId": "e3def1ce-4cf4-477c-aab3-21c454e6a389",
+    "vnfProvider": "Ericsson",
+    "vnfProductName": "SGSN-MME",
+    "vnfSoftwareVersion": "1.20 (CXS101289_R81E08)",
+    "vnfdVersion": "cxp9025898_4r81e08",
+    "vnfPkgId": "9392468011745350001",
+    "clusterName": "mycluster",
+    "instantiationState": "INSTANTIATED",
+    "instantiatedVnfInfo": null,
+    "_links": {
+      "self": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389"
+      },
+      "instantiate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/instantiate"
+      },
+      "terminate": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/terminate"
+      },
+      "change_package_info": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/change_package_info"
+      },
+      "scale": {
+        "href": "http://0:0:0:0:0:0:0:1/vnflcm/v1/vnf_instances/f3def1ce-4cf4-477c-aab3-21c454e6a389/scale"
+      }
+    }
+  }
+]

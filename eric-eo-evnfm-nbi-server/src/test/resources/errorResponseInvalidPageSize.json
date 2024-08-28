@@ -1,0 +1,6 @@
+{
+  "type":"Bad Request",
+  "title":"Wrong query parameter",
+  "status":400,
+  "detail":"Invalid page value for nextpage_opaque_marker:: randomstring"
+}

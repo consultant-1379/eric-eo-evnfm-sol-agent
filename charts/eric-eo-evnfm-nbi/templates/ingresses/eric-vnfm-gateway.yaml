@@ -1,0 +1,47 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+{{- $serviceMesh := include "eric-eo-evnfm-nbi.service-mesh-enabled" . | trim -}}
+{{- $serviceMeshIngress := include "eric-eo-evnfm-nbi.service-mesh-ingress-enabled" . | trim -}}
+{{- if and (eq $serviceMesh "true") (eq $serviceMeshIngress "true") }}
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ template "eric-eo-evnfm-nbi.name" . }}-vnfm-gateway
+  labels: {{- include "eric-eo-evnfm-nbi.labels.extended-defaults" . | nindent 4 }}
+  annotations: {{- include "eric-eo-evnfm-nbi.helm-annotations" . | nindent 4 }}
+spec:
+  selector:
+    app: service-mesh-ingress-gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+      - {{ required "A valid .Values.global.hosts.vnfm entry required" .Values.global.hosts.vnfm }}
+    tls:
+     httpsRedirect: true # sends 301 redirect for http requests
+  - port:
+      name: https-vnfm
+      number: 443
+      protocol: HTTPS
+    hosts:
+      - {{ required "A valid .Values.global.hosts.vnfm entry required" .Values.global.hosts.vnfm }}
+    tls:
+      mode: SIMPLE # enables HTTPS on this port
+      credentialName: {{ required "A valid .Values.ingress.tls.secretName entry required" .Values.ingress.tls.secretname }}
+{{- end }}

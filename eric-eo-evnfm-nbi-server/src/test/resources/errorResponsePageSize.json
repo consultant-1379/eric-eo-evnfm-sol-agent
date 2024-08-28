@@ -1,0 +1,6 @@
+{
+  "type":"Bad Request",
+  "title":"Wrong query parameter",
+  "status":400,
+  "detail":"Total size of the results will be shown cannot be more than 100. Requested page size 101"
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "global": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "hosts": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "vnfm": {
+              "type": "string",
+              "format": "hostname"
+            }
+          },
+          "required": [
+            "vnfm"
+          ]
+        }
+      },
+      "required": [
+        "hosts"
+      ]
+    },
+    "affinity": {
+      "type": "object",
+      "properties": {
+        "podAntiAffinity": {
+          "type": "string",
+          "enum": ["hard", "soft"],
+          "default": "hard"
+        },
+        "topologyKey": {
+          "type": "string",
+          "maxLength": 63,
+          "default": "kubernetes.io/hostname"
+        }
+      }
+    }
+  },
+  "required": [
+    "global"
+  ]
+}
